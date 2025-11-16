@@ -1,0 +1,9 @@
+.venv/
+gesture-service/.venv/
+__pycache__/
+*.py[cod]
+
+node_modules/
+extension/node_modules/
+
+.DS_Store

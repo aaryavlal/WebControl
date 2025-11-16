@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>WebControl Options</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        margin: 24px;
+        max-width: 600px;
+      }
+      label {
+        display: block;
+        margin-bottom: 4px;
+        font-weight: 600;
+      }
+      input[type="text"] {
+        width: 100%;
+        padding: 8px;
+        font-size: 16px;
+      }
+      button {
+        margin-top: 12px;
+        padding: 8px 16px;
+        font-size: 16px;
+      }
+      .status {
+        margin-top: 12px;
+        color: #0a0;
+        min-height: 1em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>WebControl Settings</h1>
+    <p>Configure how the extension connects to the local gesture service.</p>
+    <form id="settings-form">
+      <label for="server-url">Gesture Service WebSocket URL</label>
+      <input type="text" id="server-url" name="serverUrl" placeholder="ws://127.0.0.1:8765" required />
+      <button type="submit">Save</button>
+      <div class="status" id="status"></div>
+    </form>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>
