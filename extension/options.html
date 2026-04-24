@@ -4,42 +4,411 @@
     <meta charset="utf-8" />
     <title>WebControl Options</title>
     <style>
+      :root {
+        --bg: #f5f6fa;
+        --card-bg: #ffffff;
+        --text: #2d3436;
+        --text-muted: #636e72;
+        --accent: #6c5ce7;
+        --accent-hover: #5a4bd1;
+        --success: #00b894;
+        --error: #d63031;
+        --border: #dfe6e9;
+        --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        --radius: 10px;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
       body {
         font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        margin: 24px;
-        max-width: 600px;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        padding: 32px 16px;
+        display: flex;
+        justify-content: center;
       }
+
+      .container {
+        width: 100%;
+        max-width: 560px;
+      }
+
+      header {
+        margin-bottom: 24px;
+      }
+
+      header h1 {
+        font-size: 26px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+      }
+
+      header p {
+        margin-top: 6px;
+        color: var(--text-muted);
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 24px;
+        margin-bottom: 20px;
+      }
+
+      .card h2 {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .card h2 .icon {
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .field {
+        margin-bottom: 16px;
+      }
+
+      .field:last-child {
+        margin-bottom: 0;
+      }
+
       label {
         display: block;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
+        font-weight: 600;
+        font-size: 13px;
+        color: var(--text);
+      }
+
+      label .hint {
+        font-weight: 400;
+        color: var(--text-muted);
+        margin-left: 4px;
+      }
+
+      input[type="text"],
+      input[type="number"] {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 14px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: var(--bg);
+        color: var(--text);
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+
+      input[type="text"]:focus,
+      input[type="number"]:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+      }
+
+      .range-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .range-group input[type="range"] {
+        flex: 1;
+        accent-color: var(--accent);
+        height: 6px;
+      }
+
+      .range-group .range-value {
+        min-width: 36px;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--accent);
+      }
+
+      .toggle-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 0;
+      }
+
+      .toggle-row span {
+        font-size: 14px;
+      }
+
+      .toggle {
+        position: relative;
+        width: 44px;
+        height: 24px;
+      }
+
+      .toggle input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .toggle .slider {
+        position: absolute;
+        inset: 0;
+        background: var(--border);
+        border-radius: 24px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+
+      .toggle .slider::before {
+        content: "";
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        left: 3px;
+        bottom: 3px;
+        background: #fff;
+        border-radius: 50%;
+        transition: transform 0.2s;
+      }
+
+      .toggle input:checked + .slider {
+        background: var(--accent);
+      }
+
+      .toggle input:checked + .slider::before {
+        transform: translateX(20px);
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 8px;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 14px;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.15s, transform 0.1s;
+      }
+
+      button:active {
+        transform: scale(0.97);
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-hover);
+      }
+
+      .btn-secondary {
+        background: var(--bg);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+
+      .btn-secondary:hover {
+        background: var(--border);
+      }
+
+      .status {
+        margin-top: 14px;
+        font-size: 13px;
+        min-height: 1.4em;
+        transition: color 0.2s;
+      }
+
+      .status.success {
+        color: var(--success);
+      }
+
+      .status.error {
+        color: var(--error);
+      }
+
+      .connection-indicator {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        background: var(--bg);
+      }
+
+      .connection-indicator .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--text-muted);
+      }
+
+      .connection-indicator .dot.connected {
+        background: var(--success);
+        box-shadow: 0 0 6px rgba(0, 184, 148, 0.5);
+      }
+
+      .connection-indicator .dot.disconnected {
+        background: var(--error);
+      }
+
+      .gesture-list {
+        list-style: none;
+        padding: 0;
+      }
+
+      .gesture-list li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 14px;
+      }
+
+      .gesture-list li:last-child {
+        border-bottom: none;
+      }
+
+      .gesture-list .gesture-name {
         font-weight: 600;
       }
-      input[type="text"] {
-        width: 100%;
-        padding: 8px;
-        font-size: 16px;
+
+      .gesture-list .gesture-action {
+        color: var(--text-muted);
+        font-size: 13px;
       }
-      button {
-        margin-top: 12px;
-        padding: 8px 16px;
-        font-size: 16px;
-      }
-      .status {
-        margin-top: 12px;
-        color: #0a0;
-        min-height: 1em;
+
+      footer {
+        text-align: center;
+        margin-top: 24px;
+        font-size: 12px;
+        color: var(--text-muted);
       }
     </style>
   </head>
   <body>
-    <h1>WebControl Settings</h1>
-    <p>Configure how the extension connects to the local gesture service.</p>
-    <form id="settings-form">
-      <label for="server-url">Gesture Service WebSocket URL</label>
-      <input type="text" id="server-url" name="serverUrl" placeholder="ws://127.0.0.1:8765" required />
-      <button type="submit">Save</button>
-      <div class="status" id="status"></div>
-    </form>
+    <div class="container">
+      <header>
+        <h1>WebControl Settings</h1>
+        <p>Configure how the extension connects to the local gesture recognition service and fine-tune gesture behaviour.</p>
+      </header>
+
+      <!-- Connection settings card -->
+      <div class="card">
+        <h2><span class="icon">W</span> Connection</h2>
+        <form id="settings-form">
+          <div class="field">
+            <label for="server-url">WebSocket URL <span class="hint">(gesture service)</span></label>
+            <input type="text" id="server-url" name="serverUrl" placeholder="ws://127.0.0.1:8765" required />
+          </div>
+          <div class="field">
+            <label>Status</label>
+            <div class="connection-indicator">
+              <span class="dot" id="conn-dot"></span>
+              <span id="conn-label">Not tested</span>
+            </div>
+          </div>
+          <div class="actions">
+            <button type="submit" class="btn-primary">Save</button>
+            <button type="button" class="btn-secondary" id="test-btn">Test Connection</button>
+          </div>
+          <div class="status" id="status"></div>
+        </form>
+      </div>
+
+      <!-- Sensitivity card -->
+      <div class="card">
+        <h2><span class="icon">S</span> Sensitivity</h2>
+        <div class="field">
+          <label for="sensitivity">Gesture Confidence Threshold <span class="hint">(higher = stricter)</span></label>
+          <div class="range-group">
+            <input type="range" id="sensitivity" min="30" max="95" step="5" value="60" />
+            <span class="range-value" id="sensitivity-value">60%</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="cooldown">Cooldown Between Gestures <span class="hint">(ms)</span></label>
+          <input type="number" id="cooldown" min="100" max="3000" step="50" value="500" placeholder="500" />
+        </div>
+      </div>
+
+      <!-- Toggles card -->
+      <div class="card">
+        <h2><span class="icon">F</span> Features</h2>
+        <div class="toggle-row">
+          <span>Enable gesture overlay</span>
+          <label class="toggle">
+            <input type="checkbox" id="overlay-toggle" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span>Play haptic feedback</span>
+          <label class="toggle">
+            <input type="checkbox" id="haptic-toggle" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="toggle-row">
+          <span>Show notification on gesture</span>
+          <label class="toggle">
+            <input type="checkbox" id="notify-toggle" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Gesture map card -->
+      <div class="card">
+        <h2><span class="icon">G</span> Gesture Map</h2>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
+          Current gesture-to-action bindings. These are configured on the gesture service side.
+        </p>
+        <ul class="gesture-list" id="gesture-list">
+          <li><span class="gesture-name">Swipe Left</span><span class="gesture-action">Navigate Back</span></li>
+          <li><span class="gesture-name">Swipe Right</span><span class="gesture-action">Navigate Forward</span></li>
+          <li><span class="gesture-name">Swipe Up</span><span class="gesture-action">Scroll to Top</span></li>
+          <li><span class="gesture-name">Swipe Down</span><span class="gesture-action">Scroll to Bottom</span></li>
+          <li><span class="gesture-name">Pinch In</span><span class="gesture-action">Zoom Out</span></li>
+          <li><span class="gesture-name">Pinch Out</span><span class="gesture-action">Zoom In</span></li>
+          <li><span class="gesture-name">Fist</span><span class="gesture-action">Close Tab</span></li>
+          <li><span class="gesture-name">Open Palm</span><span class="gesture-action">New Tab</span></li>
+          <li><span class="gesture-name">Thumbs Up</span><span class="gesture-action">Bookmark Page</span></li>
+          <li><span class="gesture-name">Peace Sign</span><span class="gesture-action">Toggle Dark Mode</span></li>
+        </ul>
+      </div>
+
+      <footer>WebControl v0.1.0</footer>
+    </div>
     <script type="module" src="options.js"></script>
   </body>
 </html>
