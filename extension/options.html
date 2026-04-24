@@ -2,413 +2,720 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>WebControl Options</title>
+    <title>WebControl</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
     <style>
+      /* ─── TOKENS ─────────────────────────────────────────────── */
       :root {
-        --bg: #f5f6fa;
-        --card-bg: #ffffff;
-        --text: #2d3436;
-        --text-muted: #636e72;
-        --accent: #6c5ce7;
-        --accent-hover: #5a4bd1;
-        --success: #00b894;
-        --error: #d63031;
-        --border: #dfe6e9;
-        --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-        --radius: 10px;
+        --bg-deep:    #0d0e12;
+        --bg-panel:   #15161c;
+        --bg-surface: #1c1d25;
+        --bg-raised:  #23242e;
+        --border:     #2a2c38;
+        --border-lit: #3a3d4d;
+        --text:       #d4d4d8;
+        --text-dim:   #71717a;
+        --text-faint: #52525b;
+        --amber:      #f59e0b;
+        --amber-dim:  #92400e;
+        --amber-glow: rgba(245, 158, 11, .12);
+        --green:      #22c55e;
+        --green-glow: rgba(34, 197, 94, .15);
+        --red:        #ef4444;
+        --red-glow:   rgba(239, 68, 68, .12);
+        --mono:       "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+        --sans:       "DM Sans", system-ui, sans-serif;
+        --radius:     6px;
       }
 
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+      /* ─── RESET ──────────────────────────────────────────────── */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      html { font-size: 15px; }
 
       body {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        background: var(--bg);
+        font-family: var(--sans);
+        background: var(--bg-deep);
         color: var(--text);
         min-height: 100vh;
-        padding: 32px 16px;
-        display: flex;
-        justify-content: center;
+        overflow-x: hidden;
       }
 
-      .container {
-        width: 100%;
-        max-width: 560px;
+      /* ─── SCAN-LINES ─────────────────────────────────────────── */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 9999;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0,0,0,.04) 2px,
+          rgba(0,0,0,.04) 4px
+        );
       }
 
-      header {
-        margin-bottom: 24px;
+      /* ─── GRID BACKGROUND ───────────────────────────────────── */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: -1;
+        background-image:
+          linear-gradient(var(--border) 1px, transparent 1px),
+          linear-gradient(90deg, var(--border) 1px, transparent 1px);
+        background-size: 60px 60px;
+        opacity: .15;
       }
 
-      header h1 {
-        font-size: 26px;
-        font-weight: 700;
-        letter-spacing: -0.5px;
+      /* ─── LAYOUT ─────────────────────────────────────────────── */
+      .shell {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 48px 24px 64px;
       }
 
-      header p {
-        margin-top: 6px;
-        color: var(--text-muted);
-        font-size: 14px;
-        line-height: 1.5;
+      /* ─── HEADER ─────────────────────────────────────────────── */
+      .hero {
+        margin-bottom: 48px;
+        position: relative;
+        opacity: 0;
+        animation: fadeSlide .6s ease forwards;
       }
 
-      .card {
-        background: var(--card-bg);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        padding: 24px;
-        margin-bottom: 20px;
-      }
-
-      .card h2 {
-        font-size: 16px;
-        font-weight: 600;
-        margin-bottom: 16px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .card h2 .icon {
-        width: 20px;
-        height: 20px;
-        border-radius: 6px;
+      .hero-badge {
         display: inline-flex;
         align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        background: var(--accent);
+        gap: 6px;
+        padding: 4px 10px;
+        border: 1px solid var(--amber-dim);
+        border-radius: 100px;
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--amber);
+        background: var(--amber-glow);
+        letter-spacing: .5px;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+      }
+
+      .hero-badge .pulse {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: var(--amber);
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      .hero h1 {
+        font-family: var(--mono);
+        font-size: 36px;
+        font-weight: 700;
+        letter-spacing: -1.5px;
+        line-height: 1.1;
         color: #fff;
       }
 
-      .field {
-        margin-bottom: 16px;
+      .hero h1 .accent {
+        color: var(--amber);
       }
 
-      .field:last-child {
-        margin-bottom: 0;
+      .hero p {
+        margin-top: 12px;
+        font-size: 14px;
+        color: var(--text-dim);
+        line-height: 1.6;
+        max-width: 460px;
       }
 
-      label {
-        display: block;
-        margin-bottom: 6px;
-        font-weight: 600;
-        font-size: 13px;
+      /* decorative line */
+      .hero::after {
+        content: "";
+        position: absolute;
+        bottom: -24px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, var(--amber) 0%, var(--amber-dim) 30%, transparent 100%);
+      }
+
+      /* ─── SECTION ────────────────────────────────────────────── */
+      .section {
+        margin-bottom: 28px;
+        opacity: 0;
+        animation: fadeSlide .5s ease forwards;
+      }
+
+      .section:nth-child(2) { animation-delay: .1s; }
+      .section:nth-child(3) { animation-delay: .2s; }
+      .section:nth-child(4) { animation-delay: .3s; }
+      .section:nth-child(5) { animation-delay: .4s; }
+      .section:nth-child(6) { animation-delay: .5s; }
+
+      .section-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .section-icon {
+        width: 28px; height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius);
+        background: var(--bg-raised);
+        border: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+
+      .section-icon svg {
+        width: 14px; height: 14px;
+        stroke: var(--amber);
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .section-title {
+        font-family: var(--mono);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
         color: var(--text);
       }
 
-      label .hint {
-        font-weight: 400;
-        color: var(--text-muted);
+      .section-body {
+        background: var(--bg-panel);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        transition: border-color .2s;
+      }
+
+      .section-body:hover {
+        border-color: var(--border-lit);
+      }
+
+      /* ─── FIELDS ─────────────────────────────────────────────── */
+      .field {
+        margin-bottom: 18px;
+      }
+      .field:last-child { margin-bottom: 0; }
+
+      .field-label {
+        display: block;
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: .8px;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin-bottom: 8px;
+      }
+
+      .field-hint {
+        font-family: var(--sans);
+        text-transform: none;
+        letter-spacing: 0;
+        color: var(--text-faint);
         margin-left: 4px;
       }
 
       input[type="text"],
       input[type="number"] {
         width: 100%;
-        padding: 10px 12px;
-        font-size: 14px;
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        background: var(--bg);
+        padding: 10px 14px;
+        font-family: var(--mono);
+        font-size: 13px;
         color: var(--text);
+        background: var(--bg-deep);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
         outline: none;
-        transition: border-color 0.2s, box-shadow 0.2s;
+        transition: border-color .2s, box-shadow .2s;
       }
 
       input[type="text"]:focus,
       input[type="number"]:focus {
-        border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+        border-color: var(--amber);
+        box-shadow: 0 0 0 3px var(--amber-glow), inset 0 0 12px var(--amber-glow);
       }
 
-      .range-group {
+      input::placeholder {
+        color: var(--text-faint);
+      }
+
+      /* ─── CONNECTION STATUS ──────────────────────────────────── */
+      .conn-row {
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 10px;
+        padding: 10px 14px;
+        background: var(--bg-deep);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
       }
 
-      .range-group input[type="range"] {
-        flex: 1;
-        accent-color: var(--accent);
-        height: 6px;
-      }
-
-      .range-group .range-value {
-        min-width: 36px;
-        text-align: center;
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--accent);
-      }
-
-      .toggle-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 8px 0;
-      }
-
-      .toggle-row span {
-        font-size: 14px;
-      }
-
-      .toggle {
-        position: relative;
-        width: 44px;
-        height: 24px;
-      }
-
-      .toggle input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-      }
-
-      .toggle .slider {
-        position: absolute;
-        inset: 0;
-        background: var(--border);
-        border-radius: 24px;
-        cursor: pointer;
-        transition: background 0.2s;
-      }
-
-      .toggle .slider::before {
-        content: "";
-        position: absolute;
-        width: 18px;
-        height: 18px;
-        left: 3px;
-        bottom: 3px;
-        background: #fff;
+      .conn-dot {
+        width: 8px; height: 8px;
         border-radius: 50%;
-        transition: transform 0.2s;
+        background: var(--text-faint);
+        transition: background .3s, box-shadow .3s;
+        flex-shrink: 0;
       }
 
-      .toggle input:checked + .slider {
-        background: var(--accent);
+      .conn-dot.ok {
+        background: var(--green);
+        box-shadow: 0 0 8px var(--green-glow);
+        animation: pulse 2s ease-in-out infinite;
       }
 
-      .toggle input:checked + .slider::before {
-        transform: translateX(20px);
+      .conn-dot.fail {
+        background: var(--red);
+        box-shadow: 0 0 8px var(--red-glow);
       }
 
-      .actions {
+      .conn-label {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--text-dim);
+      }
+
+      /* ─── BUTTONS ────────────────────────────────────────────── */
+      .btn-row {
         display: flex;
         gap: 10px;
-        margin-top: 8px;
+        margin-top: 14px;
       }
 
       button {
-        padding: 10px 20px;
-        font-size: 14px;
+        font-family: var(--mono);
+        font-size: 12px;
         font-weight: 600;
-        border: none;
-        border-radius: 8px;
+        letter-spacing: .5px;
+        padding: 9px 18px;
+        border: 1px solid transparent;
+        border-radius: var(--radius);
         cursor: pointer;
-        transition: background 0.15s, transform 0.1s;
+        transition: background .15s, border-color .15s, transform .1s, box-shadow .2s;
       }
 
-      button:active {
-        transform: scale(0.97);
+      button:active { transform: scale(.97); }
+
+      .btn-amber {
+        background: var(--amber);
+        color: var(--bg-deep);
+        border-color: var(--amber);
       }
 
-      .btn-primary {
-        background: var(--accent);
-        color: #fff;
+      .btn-amber:hover {
+        background: #d97706;
+        border-color: #d97706;
+        box-shadow: 0 0 20px var(--amber-glow);
       }
 
-      .btn-primary:hover {
-        background: var(--accent-hover);
+      .btn-ghost {
+        background: transparent;
+        color: var(--text-dim);
+        border-color: var(--border);
       }
 
-      .btn-secondary {
-        background: var(--bg);
+      .btn-ghost:hover {
         color: var(--text);
-        border: 1px solid var(--border);
+        border-color: var(--border-lit);
+        background: var(--bg-raised);
       }
 
-      .btn-secondary:hover {
-        background: var(--border);
-      }
-
-      .status {
-        margin-top: 14px;
-        font-size: 13px;
+      .status-msg {
+        margin-top: 12px;
+        font-family: var(--mono);
+        font-size: 11px;
         min-height: 1.4em;
-        transition: color 0.2s;
+        transition: color .2s;
+        color: var(--text-faint);
       }
 
-      .status.success {
-        color: var(--success);
-      }
+      .status-msg.ok  { color: var(--green); }
+      .status-msg.err { color: var(--red); }
 
-      .status.error {
-        color: var(--error);
-      }
-
-      .connection-indicator {
+      /* ─── RANGE SLIDER ───────────────────────────────────────── */
+      .range-wrap {
         display: flex;
         align-items: center;
-        gap: 8px;
-        padding: 10px 14px;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 500;
-        background: var(--bg);
+        gap: 14px;
       }
 
-      .connection-indicator .dot {
-        width: 8px;
-        height: 8px;
+      .range-wrap input[type="range"] {
+        -webkit-appearance: none;
+        appearance: none;
+        flex: 1;
+        height: 4px;
+        background: var(--border);
+        border-radius: 2px;
+        outline: none;
+        cursor: pointer;
+      }
+
+      .range-wrap input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 16px; height: 16px;
         border-radius: 50%;
-        background: var(--text-muted);
+        background: var(--amber);
+        border: 2px solid var(--bg-deep);
+        box-shadow: 0 0 6px var(--amber-glow);
+        cursor: pointer;
+        transition: transform .15s;
       }
 
-      .connection-indicator .dot.connected {
-        background: var(--success);
-        box-shadow: 0 0 6px rgba(0, 184, 148, 0.5);
+      .range-wrap input[type="range"]::-webkit-slider-thumb:hover {
+        transform: scale(1.2);
       }
 
-      .connection-indicator .dot.disconnected {
-        background: var(--error);
+      .range-wrap input[type="range"]::-moz-range-thumb {
+        width: 16px; height: 16px;
+        border-radius: 50%;
+        background: var(--amber);
+        border: 2px solid var(--bg-deep);
+        cursor: pointer;
       }
 
-      .gesture-list {
-        list-style: none;
-        padding: 0;
+      .range-val {
+        font-family: var(--mono);
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--amber);
+        min-width: 40px;
+        text-align: right;
       }
 
-      .gesture-list li {
+      /* ─── TOGGLE SWITCH ──────────────────────────────────────── */
+      .toggle-row {
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 10px 0;
         border-bottom: 1px solid var(--border);
-        font-size: 14px;
       }
 
-      .gesture-list li:last-child {
-        border-bottom: none;
-      }
+      .toggle-row:last-child { border-bottom: none; }
 
-      .gesture-list .gesture-name {
-        font-weight: 600;
-      }
-
-      .gesture-list .gesture-action {
-        color: var(--text-muted);
+      .toggle-row .label-text {
         font-size: 13px;
+        color: var(--text);
       }
 
-      footer {
-        text-align: center;
-        margin-top: 24px;
-        font-size: 12px;
-        color: var(--text-muted);
+      .toggle-row .label-sub {
+        font-size: 11px;
+        color: var(--text-faint);
+        margin-top: 2px;
       }
+
+      .switch {
+        position: relative;
+        width: 40px; height: 22px;
+        flex-shrink: 0;
+      }
+
+      .switch input {
+        opacity: 0; width: 0; height: 0;
+      }
+
+      .switch .track {
+        position: absolute;
+        inset: 0;
+        background: var(--bg-raised);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        cursor: pointer;
+        transition: background .25s, border-color .25s;
+      }
+
+      .switch .track::before {
+        content: "";
+        position: absolute;
+        width: 16px; height: 16px;
+        left: 2px; top: 2px;
+        background: var(--text-faint);
+        border-radius: 50%;
+        transition: transform .25s, background .25s;
+      }
+
+      .switch input:checked + .track {
+        background: var(--amber-dim);
+        border-color: var(--amber);
+      }
+
+      .switch input:checked + .track::before {
+        transform: translateX(18px);
+        background: var(--amber);
+      }
+
+      /* ─── GESTURE MAP ────────────────────────────────────────── */
+      .gesture-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .gesture-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px;
+        background: var(--bg-deep);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        transition: border-color .2s, background .2s;
+      }
+
+      .gesture-card:hover {
+        border-color: var(--amber-dim);
+        background: var(--bg-surface);
+      }
+
+      .gesture-card .g-icon {
+        width: 32px; height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius);
+        background: var(--bg-raised);
+        border: 1px solid var(--border);
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+
+      .gesture-card .g-info {
+        min-width: 0;
+      }
+
+      .gesture-card .g-name {
+        font-family: var(--mono);
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text);
+        letter-spacing: .3px;
+      }
+
+      .gesture-card .g-action {
+        font-size: 11px;
+        color: var(--text-faint);
+        margin-top: 1px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* ─── FOOTER ─────────────────────────────────────────────── */
+      .foot {
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        opacity: 0;
+        animation: fadeSlide .5s ease .6s forwards;
+      }
+
+      .foot-left {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text-faint);
+        letter-spacing: .5px;
+      }
+
+      .foot-right {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--text-faint);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      /* ─── KEYFRAMES ──────────────────────────────────────────── */
+      @keyframes fadeSlide {
+        from { opacity: 0; transform: translateY(12px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50%      { opacity: .4; }
+      }
+
+      /* ─── SCROLLBAR ──────────────────────────────────────────── */
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: var(--bg-deep); }
+      ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+      ::-webkit-scrollbar-thumb:hover { background: var(--border-lit); }
     </style>
   </head>
   <body>
-    <div class="container">
-      <header>
-        <h1>WebControl Settings</h1>
-        <p>Configure how the extension connects to the local gesture recognition service and fine-tune gesture behaviour.</p>
-      </header>
+    <div class="shell">
 
-      <!-- Connection settings card -->
-      <div class="card">
-        <h2><span class="icon">W</span> Connection</h2>
-        <form id="settings-form">
-          <div class="field">
-            <label for="server-url">WebSocket URL <span class="hint">(gesture service)</span></label>
-            <input type="text" id="server-url" name="serverUrl" placeholder="ws://127.0.0.1:8765" required />
+      <!-- ▸ HERO ──────────────────────────────────────────────── -->
+      <div class="hero">
+        <div class="hero-badge"><span class="pulse"></span> gesture control active</div>
+        <h1>Web<span class="accent">Control</span></h1>
+        <p>Configure the bridge between your hand gestures and Chrome. Adjust connection, sensitivity, and feature flags below.</p>
+      </div>
+
+      <!-- ▸ CONNECTION ────────────────────────────────────────── -->
+      <div class="section">
+        <div class="section-head">
+          <div class="section-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2m0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8"/><path d="M12 8v4l3 3"/></svg>
           </div>
+          <span class="section-title">Connection</span>
+        </div>
+        <div class="section-body">
+          <form id="settings-form">
+            <div class="field">
+              <span class="field-label">WebSocket URL <span class="field-hint">// gesture service endpoint</span></span>
+              <input type="text" id="server-url" name="serverUrl" placeholder="ws://127.0.0.1:8765" required />
+            </div>
+            <div class="field">
+              <span class="field-label">Status</span>
+              <div class="conn-row">
+                <span class="conn-dot" id="conn-dot"></span>
+                <span class="conn-label" id="conn-label">not tested</span>
+              </div>
+            </div>
+            <div class="btn-row">
+              <button type="submit" class="btn-amber">Save</button>
+              <button type="button" class="btn-ghost" id="test-btn">Test Connection</button>
+            </div>
+            <div class="status-msg" id="status"></div>
+          </form>
+        </div>
+      </div>
+
+      <!-- ▸ SENSITIVITY ───────────────────────────────────────── -->
+      <div class="section">
+        <div class="section-head">
+          <div class="section-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/></svg>
+          </div>
+          <span class="section-title">Sensitivity</span>
+        </div>
+        <div class="section-body">
           <div class="field">
-            <label>Status</label>
-            <div class="connection-indicator">
-              <span class="dot" id="conn-dot"></span>
-              <span id="conn-label">Not tested</span>
+            <span class="field-label">Confidence Threshold <span class="field-hint">// higher = stricter</span></span>
+            <div class="range-wrap">
+              <input type="range" id="sensitivity" min="30" max="95" step="5" value="60" />
+              <span class="range-val" id="sensitivity-value">60%</span>
             </div>
           </div>
-          <div class="actions">
-            <button type="submit" class="btn-primary">Save</button>
-            <button type="button" class="btn-secondary" id="test-btn">Test Connection</button>
-          </div>
-          <div class="status" id="status"></div>
-        </form>
-      </div>
-
-      <!-- Sensitivity card -->
-      <div class="card">
-        <h2><span class="icon">S</span> Sensitivity</h2>
-        <div class="field">
-          <label for="sensitivity">Gesture Confidence Threshold <span class="hint">(higher = stricter)</span></label>
-          <div class="range-group">
-            <input type="range" id="sensitivity" min="30" max="95" step="5" value="60" />
-            <span class="range-value" id="sensitivity-value">60%</span>
+          <div class="field">
+            <span class="field-label">Cooldown <span class="field-hint">// ms between gestures</span></span>
+            <input type="number" id="cooldown" min="100" max="3000" step="50" value="500" placeholder="500" />
           </div>
         </div>
-        <div class="field">
-          <label for="cooldown">Cooldown Between Gestures <span class="hint">(ms)</span></label>
-          <input type="number" id="cooldown" min="100" max="3000" step="50" value="500" placeholder="500" />
+      </div>
+
+      <!-- ▸ FEATURES ──────────────────────────────────────────── -->
+      <div class="section">
+        <div class="section-head">
+          <div class="section-icon">
+            <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <span class="section-title">Features</span>
+        </div>
+        <div class="section-body">
+          <div class="toggle-row">
+            <div>
+              <div class="label-text">Gesture overlay</div>
+              <div class="label-sub">Show detected gesture name on screen</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="overlay-toggle" checked />
+              <span class="track"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <div>
+              <div class="label-text">Haptic feedback</div>
+              <div class="label-sub">Vibrate on supported devices</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="haptic-toggle" />
+              <span class="track"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <div>
+              <div class="label-text">Notifications</div>
+              <div class="label-sub">Browser notification per gesture</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="notify-toggle" checked />
+              <span class="track"></span>
+            </label>
+          </div>
         </div>
       </div>
 
-      <!-- Toggles card -->
-      <div class="card">
-        <h2><span class="icon">F</span> Features</h2>
-        <div class="toggle-row">
-          <span>Enable gesture overlay</span>
-          <label class="toggle">
-            <input type="checkbox" id="overlay-toggle" checked />
-            <span class="slider"></span>
-          </label>
+      <!-- ▸ GESTURE MAP ───────────────────────────────────────── -->
+      <div class="section">
+        <div class="section-head">
+          <div class="section-icon">
+            <svg viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2"/><path d="M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v6"/><path d="M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 13"/></svg>
+          </div>
+          <span class="section-title">Gesture Map</span>
         </div>
-        <div class="toggle-row">
-          <span>Play haptic feedback</span>
-          <label class="toggle">
-            <input type="checkbox" id="haptic-toggle" />
-            <span class="slider"></span>
-          </label>
-        </div>
-        <div class="toggle-row">
-          <span>Show notification on gesture</span>
-          <label class="toggle">
-            <input type="checkbox" id="notify-toggle" checked />
-            <span class="slider"></span>
-          </label>
+        <div class="section-body">
+          <div class="gesture-grid" id="gesture-list">
+            <div class="gesture-card">
+              <div class="g-icon">&larr;</div>
+              <div class="g-info"><div class="g-name">swipe_left</div><div class="g-action">Next Tab</div></div>
+            </div>
+            <div class="gesture-card">
+              <div class="g-icon">&rarr;</div>
+              <div class="g-info"><div class="g-name">swipe_right</div><div class="g-action">Prev Tab</div></div>
+            </div>
+            <div class="gesture-card">
+              <div class="g-icon">&uarr;</div>
+              <div class="g-info"><div class="g-name">swipe_up</div><div class="g-action">Scroll Top</div></div>
+            </div>
+            <div class="gesture-card">
+              <div class="g-icon">&darr;</div>
+              <div class="g-info"><div class="g-name">swipe_down</div><div class="g-action">Scroll Bottom</div></div>
+            </div>
+            <div class="gesture-card">
+              <div class="g-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              </div>
+              <div class="g-info"><div class="g-name">pinch</div><div class="g-action">New Tab</div></div>
+            </div>
+            <div class="gesture-card">
+              <div class="g-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83"/></svg>
+              </div>
+              <div class="g-info"><div class="g-name">closed_fist</div><div class="g-action">Close Tab</div></div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- Gesture map card -->
-      <div class="card">
-        <h2><span class="icon">G</span> Gesture Map</h2>
-        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">
-          Current gesture-to-action bindings. These are configured on the gesture service side.
-        </p>
-        <ul class="gesture-list" id="gesture-list">
-          <li><span class="gesture-name">Swipe Left</span><span class="gesture-action">Navigate Back</span></li>
-          <li><span class="gesture-name">Swipe Right</span><span class="gesture-action">Navigate Forward</span></li>
-          <li><span class="gesture-name">Swipe Up</span><span class="gesture-action">Scroll to Top</span></li>
-          <li><span class="gesture-name">Swipe Down</span><span class="gesture-action">Scroll to Bottom</span></li>
-          <li><span class="gesture-name">Pinch In</span><span class="gesture-action">Zoom Out</span></li>
-          <li><span class="gesture-name">Pinch Out</span><span class="gesture-action">Zoom In</span></li>
-          <li><span class="gesture-name">Fist</span><span class="gesture-action">Close Tab</span></li>
-          <li><span class="gesture-name">Open Palm</span><span class="gesture-action">New Tab</span></li>
-          <li><span class="gesture-name">Thumbs Up</span><span class="gesture-action">Bookmark Page</span></li>
-          <li><span class="gesture-name">Peace Sign</span><span class="gesture-action">Toggle Dark Mode</span></li>
-        </ul>
+      <!-- ▸ FOOTER ────────────────────────────────────────────── -->
+      <div class="foot">
+        <span class="foot-left">WebControl v0.1.0</span>
+        <span class="foot-right">Gesture &rarr; Chrome</span>
       </div>
-
-      <footer>WebControl v0.1.0</footer>
     </div>
+
     <script type="module" src="options.js"></script>
   </body>
 </html>
