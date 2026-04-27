@@ -1,5 +1,7 @@
 # WebControl
 
+[![CI](https://github.com/aaryavlal/WebControl/actions/workflows/ci.yml/badge.svg)](https://github.com/aaryavlal/WebControl/actions/workflows/ci.yml)
+
 Control Chrome with hand gestures. This repo contains:
 
 - `extension/` – a Manifest V3 Chrome extension that connects to the local gesture service over WebSocket, translates recognized gestures into tab commands, and shows a lightweight in-page overlay for feedback.
