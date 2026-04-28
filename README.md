@@ -8,6 +8,8 @@ Control Chrome with hand gestures. This repo contains:
 - `gesture-service/` – a Python service that uses MediaPipe Hands + OpenCV to detect simple gestures (`swipe_left`, `swipe_right`, `pinch`, `closed_fist`) and streams them as JSON to any connected extension instance.
 - `docs/` – architecture notes and gesture definitions.
 
+> **Tip:** For the best experience, use a well-lit environment so the camera can track your hand accurately.
+
 ## Getting started
 
 1. **Install the gesture service dependencies**
