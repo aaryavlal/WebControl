@@ -9,6 +9,7 @@ Control Chrome with hand gestures. This repo contains:
 - `docs/` – architecture notes and gesture definitions.
 
 > **Tip:** For the best experience, use a well-lit environment so the camera can track your hand accurately.
+> Avoid backlighting (e.g. sitting in front of a window) as it can silhouette your hand and reduce detection accuracy.
 
 ## Getting started
 
